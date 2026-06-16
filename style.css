@@ -1,15 +1,17 @@
 :root {
   color-scheme: dark;
   --sidebar-width: 240px;
-  --bg: hsla(144, 23%, 33%, 0.92);
-  --bg-soft: hsla(144, 18%, 27%, 0.92);
-  --bg-glass: hsla(144, 16%, 20%, 0.45);
+  /* Arka plan için tek renk (solid) koyu yeşil */
+  --bg: #1a2920; 
+  /* Kartlar ve yan menü için uyumlu alt tonlar */
+  --bg-soft: #223529;
+  --bg-glass: rgba(26, 41, 32, 0.45);
   --text: #f3f0e8;
   --muted: #d7d1c6;
   --accent: hsl(144, 45%, 45%);
   --accent-2: hsl(144, 55%, 55%);
-  --border: rgba(243, 240, 232, 0.18);
-  --shadow: 0 20px 60px rgba(12, 18, 15, 0.55);
+  --border: rgba(243, 240, 232, 0.12);
+  --shadow: 0 20px 60px rgba(10, 16, 12, 0.5);
 }
 
 * {
@@ -24,7 +26,7 @@ html {
 
 body {
   font-family: "Space Grotesk", system-ui, sans-serif;
-  background: var(--bg);
+  background-color: var(--bg);
   color: var(--text);
   line-height: 1.6;
 }
@@ -76,7 +78,7 @@ img {
   width: var(--sidebar-width);
   z-index: 20;
   backdrop-filter: blur(14px);
-  background: hsla(144, 23%, 31%, 0.96);
+  background: rgba(34, 53, 41, 0.96);
   border-right: 1px solid var(--border);
 }
 
@@ -102,7 +104,7 @@ img {
   border-radius: 50%;
   overflow: hidden;
   border: 1px solid var(--border);
-  background: radial-gradient(circle at top, hsla(144, 45%, 45%, 0.35), hsla(144, 23%, 28%, 0.6));
+  background: radial-gradient(circle at top, hsla(144, 45%, 45%, 0.35), #1a2920);
 }
 
 .profile-photo img {
@@ -406,7 +408,7 @@ textarea {
   padding: 12px 14px;
   border-radius: 12px;
   border: 1px solid var(--border);
-  background: hsla(144, 23%, 22%, 0.9);
+  background: rgba(34, 53, 41, 0.9);
   color: var(--text);
   font-size: 0.95rem;
 }
