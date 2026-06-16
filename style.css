@@ -24,7 +24,7 @@ html {
 
 body {
   font-family: "Space Grotesk", system-ui, sans-serif;
-  background: linear-gradient(to right, hsla(144, 23%, 33%, 0.92), #f3efe4);
+  background: var(--bg);
   color: var(--text);
   line-height: 1.6;
 }
