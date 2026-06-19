@@ -512,7 +512,7 @@ textarea:focus {
   gap: 5px;
   width: 32px;
   height: 32px;
-  background: none !important;
+  background: transparent !important;
   border: none !important;
   box-shadow: none !important;
   outline: none !important;
@@ -521,9 +521,11 @@ textarea:focus {
   padding: 0;
   -webkit-appearance: none;
   appearance: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .menu-toggle span {
+  pointer-events: none;
   display: block;
   width: 24px;
   height: 2px;
@@ -589,8 +591,9 @@ textarea:focus {
   .menu-toggle {
     display: flex !important;
     margin-left: auto;
-    background: none !important;
+    background: transparent !important;
     border: none !important;
+    box-shadow: none !important;
   }
 
   .nav-links {
