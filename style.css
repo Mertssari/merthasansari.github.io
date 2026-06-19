@@ -510,13 +510,17 @@ textarea:focus {
   justify-content: center;
   align-items: center;
   gap: 5px;
-  width: 30px;
-  height: 30px;
-  background: transparent;
-  border: none;
+  width: 32px;
+  height: 32px;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
   cursor: pointer;
   z-index: 1001;
   padding: 0;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .menu-toggle span {
@@ -526,6 +530,10 @@ textarea:focus {
   background-color: #ffffff;
   border-radius: 2px;
   transition: all 0.3s ease;
+}
+
+.menu-toggle:hover span {
+  background-color: var(--accent);
 }
 
 .nav-social-links {
@@ -580,9 +588,9 @@ textarea:focus {
 
   .menu-toggle {
     display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
     margin-left: auto;
+    background: none !important;
+    border: none !important;
   }
 
   .nav-links {
