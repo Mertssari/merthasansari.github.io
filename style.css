@@ -261,7 +261,7 @@ img {
   border-radius: 24px;
   overflow: hidden;
   border: 1px solid var(--border);
-  background: #f4f5f4; /* Beyaz tonlarında soft bir renk */
+  background: #526552; /* Beyaz tonlarında soft bir renk */
   box-shadow: var(--shadow);
 }
 
