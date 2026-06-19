@@ -486,6 +486,8 @@ textarea:focus {
 @media (max-width: 900px) {
   .site-header {
     position: sticky;
+    top: 0;
+    bottom: auto;
     width: 100%;
     height: auto;
     border-right: none;
