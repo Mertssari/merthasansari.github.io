@@ -109,7 +109,7 @@ if (!mount) {
     leftArm = findBoneByKeywords(['leftarm', 'upperarm_l', 'upperarm.l', 'l_upperarm', 'arm_l'])
   }
 
-  gltfLoader.load('public/model.glb', applyModel, undefined, (error) => {
+  gltfLoader.load('model.glb', applyModel, undefined, (error) => {
     console.error('GLB load failed', error)
   })
 
