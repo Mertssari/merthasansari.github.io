@@ -565,6 +565,10 @@ textarea:focus {
     display: none;
   }
 
+  .menu-toggle {
+    display: flex;
+  }
+
   .nav-links {
     display: none;
     position: absolute;
