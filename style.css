@@ -94,8 +94,16 @@ img {
 
 .language-switch {
   display: flex;
+  justify-content: center;
   gap: 8px;
-  margin-bottom: -10px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  width: 100%;
+}
+
+.nav-links .language-switch {
+  display: none;
 }
 
 .lang-btn {
@@ -189,6 +197,7 @@ img {
   display: flex;
   gap: 12px;
   align-items: center;
+  justify-content: center;
 }
 
 .social-links a,
@@ -556,10 +565,6 @@ textarea:focus {
     display: none;
   }
 
-  .sidebar > .language-switch {
-    display: none;
-  }
-
   .nav-links {
     display: none;
     position: absolute;
@@ -591,6 +596,12 @@ textarea:focus {
 
   .nav-links.active {
     display: flex;
+  }
+
+  .nav-links .language-switch {
+    display: flex;
+    margin-top: 12px;
+    padding-top: 12px;
   }
 
   .nav-social-links {
