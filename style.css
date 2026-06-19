@@ -525,11 +525,31 @@ textarea:focus {
 
   .nav-links {
     display: none;
-    width: 100%;
+    position: absolute;
+    top: 100%;
+    right: 20px;
+    width: 200px;
+    background: var(--bg-soft);
     flex-direction: column;
-    margin-top: 16px;
-    gap: 12px;
-    text-align: center;
+    padding: 12px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    margin-top: 8px;
+    gap: 4px;
+    text-align: left;
+    z-index: 100;
+  }
+
+  .nav-links a {
+    padding: 10px 16px;
+    border-radius: 8px;
+    width: 100%;
+    display: block;
+  }
+
+  .nav-links a:hover {
+    background: rgba(255, 255, 255, 0.05);
   }
 
   .nav-links.active {
