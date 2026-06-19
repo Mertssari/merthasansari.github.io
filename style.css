@@ -509,26 +509,19 @@ textarea:focus {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 6px;
-  width: 44px;
-  height: 44px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  gap: 5px;
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border: none;
   cursor: pointer;
   z-index: 1001;
   padding: 0;
-  transition: all 0.2s ease;
-}
-
-.menu-toggle:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: var(--accent);
 }
 
 .menu-toggle span {
   display: block;
-  width: 22px;
+  width: 24px;
   height: 2px;
   background-color: #ffffff;
   border-radius: 2px;
