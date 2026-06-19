@@ -1,9 +1,9 @@
-:root {
+﻿:root {
   color-scheme: dark;
   --sidebar-width: 240px;
-  /* Arka plan için tek renk (solid) koyu yeşil */
+  /* Arka plan iÃ§in tek renk (solid) koyu yeÅŸil */
   --bg: #1a2920; 
-  /* Kartlar ve yan menü için uyumlu alt tonlar */
+  /* Kartlar ve yan menÃ¼ iÃ§in uyumlu alt tonlar */
   --bg-soft: #223529;
   --bg-glass: rgba(26, 41, 32, 0.45);
   --text: #f3f0e8;
@@ -261,7 +261,7 @@ img {
   border-radius: 24px;
   overflow: hidden;
   border: 1px solid var(--border);
-  background: #526552; /* Beyaz tonlarında soft bir renk */
+  background: #526552; /* Beyaz tonlarÄ±nda soft bir renk */
   box-shadow: var(--shadow);
 }
 
@@ -552,5 +552,12 @@ textarea:focus {
 
   .timeline-item {
     padding-left: 34px;
+  }
+}
+
+@media (max-width: 900px) {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
