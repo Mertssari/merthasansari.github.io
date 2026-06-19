@@ -261,7 +261,7 @@ img {
   border-radius: 24px;
   overflow: hidden;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.08);
+  background: rgb(182, 182, 182);
   box-shadow: var(--shadow);
 }
 
