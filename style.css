@@ -508,19 +508,20 @@ textarea:focus {
   display: none;
   flex-direction: column;
   justify-content: space-between;
-  width: 24px;
-  height: 18px;
+  width: 30px;
+  height: 20px;
   background: transparent;
   border: none;
   cursor: pointer;
-  z-index: 30;
+  z-index: 1001;
+  padding: 0;
 }
 
 .menu-toggle span {
   display: block;
   width: 100%;
   height: 2px;
-  background-color: var(--text);
+  background-color: #ffffff;
   border-radius: 2px;
   transition: all 0.3s ease;
 }
@@ -541,11 +542,12 @@ textarea:focus {
   }
 
   .sidebar {
+    display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 20px;
+    padding: 12px 20px;
+    height: 70px;
   }
 
   .profile-block {
@@ -560,6 +562,10 @@ textarea:focus {
     height: 48px;
   }
 
+  .profile-name {
+    font-size: 1.1rem;
+  }
+
   .profile-role,
   .sidebar-footer {
     display: none;
@@ -567,6 +573,7 @@ textarea:focus {
 
   .menu-toggle {
     display: flex;
+    margin-left: auto;
   }
 
   .nav-links {
