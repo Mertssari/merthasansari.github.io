@@ -79,14 +79,14 @@ if (contactForm) {
 // Internationalization (i18n)
 const translations = {
   tr: {
-    profile_role: "Bilgisayar Mühendisliği",
+    profile_role: "Bilgisayar Mühendisliği Öğrencisi",
     nav_welcome: "Hoşgeldiniz",
     nav_about: "Hakkımda",
     nav_projects: "Projeler",
     nav_resume: "Özgeçmiş",
     nav_contact: "İletişim",
     hero_eyebrow: "Yeni Nesil Portfolyo",
-    hero_subtitle: "Bilgisayar Mühendisliği",
+    hero_subtitle: "Bilgisayar Mühendisliği Öğrencisi",
     hero_lead: "Teknoloji ve estetiğin kesişiminde, güvenli ve ölçeklenebilir dijital deneyimler tasarlıyorum.",
     hero_contact: "İletişim",
     hero_resume: "Özgeçmiş",
@@ -128,14 +128,14 @@ const translations = {
     social_github: "GitHub"
   },
   en: {
-    profile_role: "Computer Engineering",
+    profile_role: "Computer Engineering Student",
     nav_welcome: "Welcome",
     nav_about: "About",
     nav_projects: "Projects",
     nav_resume: "Resume",
     nav_contact: "Contact",
     hero_eyebrow: "Next-Gen Portfolio",
-    hero_subtitle: "Computer Engineering",
+    hero_subtitle: "Computer Engineering Student",
     hero_lead: "Designing secure and scalable digital experiences at the intersection of technology and aesthetics.",
     hero_contact: "Contact",
     hero_resume: "Resume",
