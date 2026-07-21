@@ -1,5 +1,10 @@
 import * as THREE from 'three'
-import { GLTFLoader } from 'https://unpkg.com/three@0.167.1/examples/jsm/loaders/GLTFLoader.js'
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
 
 const mount = document.getElementById('hero-3d-root')
 
@@ -11,8 +16,16 @@ if (!mount) {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
   renderer.setSize(mount.clientWidth, mount.clientHeight)
   renderer.outputColorSpace = THREE.SRGBColorSpace
+  renderer.toneMapping = THREE.ACESFilmicToneMapping
+  renderer.toneMappingExposure = 1.15
   renderer.shadowMap.enabled = true
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap
   mount.appendChild(renderer.domElement)
+
+  // Soft studio environment for realistic, professional-looking reflections
+  const pmremGenerator = new THREE.PMREMGenerator(renderer)
+  scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture
+  scene.fog = new THREE.Fog(0x090c14, 6, 15)
 
   const camera = new THREE.PerspectiveCamera(
     35,
@@ -22,21 +35,41 @@ if (!mount) {
   )
   camera.position.set(0, 1.2, 5)
 
-  const ambient = new THREE.AmbientLight(0xffffff, 1.1)
+  const ambient = new THREE.AmbientLight(0xdfe8ff, 0.55)
   scene.add(ambient)
 
-  const keyLight = new THREE.DirectionalLight(0xb8ffd1, 2.2)
+  const keyLight = new THREE.DirectionalLight(0xaecbff, 2.4)
   keyLight.position.set(4, 6, 5)
   keyLight.castShadow = true
+  keyLight.shadow.mapSize.set(1024, 1024)
+  keyLight.shadow.radius = 4
   scene.add(keyLight)
 
-  const rimLight = new THREE.DirectionalLight(0x6fd9a4, 1)
-  rimLight.position.set(-4, 2, -2)
+  const rimLight = new THREE.DirectionalLight(0x9b6cff, 1.4)
+  rimLight.position.set(-4, 3, -3)
   scene.add(rimLight)
 
-  const fillLight = new THREE.PointLight(0xc6ffda, 1.2, 20)
+  const fillLight = new THREE.PointLight(0x4c8dff, 1.1, 20)
   fillLight.position.set(-2, 2, 3)
   scene.add(fillLight)
+
+  // Soft contact shadow blob beneath the character
+  const shadowCanvas = document.createElement('canvas')
+  shadowCanvas.width = 256
+  shadowCanvas.height = 256
+  const ctx = shadowCanvas.getContext('2d')
+  const gradient = ctx.createRadialGradient(128, 128, 0, 128, 128, 128)
+  gradient.addColorStop(0, 'rgba(0,0,0,0.55)')
+  gradient.addColorStop(1, 'rgba(0,0,0,0)')
+  ctx.fillStyle = gradient
+  ctx.fillRect(0, 0, 256, 256)
+  const shadowTexture = new THREE.CanvasTexture(shadowCanvas)
+  const contactShadow = new THREE.Mesh(
+    new THREE.PlaneGeometry(2.2, 2.2),
+    new THREE.MeshBasicMaterial({ map: shadowTexture, transparent: true, depthWrite: false })
+  )
+  contactShadow.rotation.x = -Math.PI / 2
+  contactShadow.position.y = 0.01
 
   const characterRoot = new THREE.Group()
   const baseY = -1.6
@@ -46,6 +79,7 @@ if (!mount) {
   const baseLeftArmZ = -0.1
   characterRoot.position.set(0, baseY, 0)
   scene.add(characterRoot)
+  characterRoot.add(contactShadow)
 
   const gltfLoader = new GLTFLoader()
 
@@ -78,6 +112,9 @@ if (!mount) {
       if (child.isMesh) {
         child.castShadow = true
         child.receiveShadow = true
+        if (child.material) {
+          child.material.envMapIntensity = 1.1
+        }
       }
     })
 
@@ -107,6 +144,12 @@ if (!mount) {
     ])
     rightHand = findBoneByKeywords(['righthand', 'hand_r', 'r_hand'])
     leftArm = findBoneByKeywords(['leftarm', 'upperarm_l', 'upperarm.l', 'l_upperarm', 'arm_l'])
+
+    gsap.fromTo(
+      model.scale,
+      { x: 0, y: 0, z: 0 },
+      { x: scale, y: scale, z: scale, duration: 1.1, ease: 'back.out(1.6)', delay: 0.2 }
+    )
   }
 
   gltfLoader.load('model.glb', applyModel, undefined, (error) => {
@@ -117,10 +160,17 @@ if (!mount) {
   let pointerX = 0
   let pointerY = 0
 
-  const updateScroll = () => {
-    const maxScroll = Math.max(document.body.scrollHeight - window.innerHeight, 1)
-    scrollProgress = window.scrollY / maxScroll
-  }
+  // ScrollTrigger drives a smoothed, scrubbed progress value across the whole page,
+  // which the render loop below maps onto rotation / scale / lift for the scrollytelling effect.
+  ScrollTrigger.create({
+    trigger: document.body,
+    start: 'top top',
+    end: 'bottom bottom',
+    scrub: 0.6,
+    onUpdate: (self) => {
+      scrollProgress = self.progress
+    }
+  })
 
   const updatePointer = (event) => {
     pointerX = (event.clientX / window.innerWidth) * 2 - 1
@@ -133,8 +183,6 @@ if (!mount) {
     renderer.setSize(mount.clientWidth, mount.clientHeight)
   }
 
-  updateScroll()
-  window.addEventListener('scroll', updateScroll, { passive: true })
   window.addEventListener('mousemove', updatePointer)
   window.addEventListener('resize', handleResize)
 
@@ -152,12 +200,21 @@ if (!mount) {
     const waveRaise = -1.6 * waveStrength
     const waveSide = 0.35 * waveStrength
 
+    // Scroll-driven spin + lift: the figure slowly turns and rises as the page
+    // scrolls, creating the illusion that it is carrying the viewport downward.
+    const scrollSpin = scrollProgress * Math.PI * 1.6
     characterRoot.rotation.y = THREE.MathUtils.lerp(
       characterRoot.rotation.y,
-      pointerX * 0.25,
+      pointerX * 0.25 + scrollSpin,
       0.06
     )
-    characterRoot.position.y = baseY + Math.sin(t * 0.8) * 0.06 + idleBob
+    const scrollLift = scrollProgress * 0.9
+    characterRoot.position.y = baseY + scrollLift + Math.sin(t * 0.8) * 0.06 + idleBob
+
+    const scrollScale = 1 + scrollProgress * 0.22
+    characterRoot.scale.setScalar(
+      THREE.MathUtils.lerp(characterRoot.scale.x || 1, scrollScale, 0.08)
+    )
 
     const reach = 1.1 * scrollProgress
     const lean = 0.3 * scrollProgress
@@ -183,7 +240,6 @@ if (!mount) {
 
     if (!spineBone && !chestBone) {
       characterRoot.rotation.x = THREE.MathUtils.lerp(characterRoot.rotation.x, bodyLeanX, 0.08)
-      characterRoot.rotation.z = THREE.MathUtils.lerp(characterRoot.rotation.z, bodyLeanZ, 0.08)
     }
 
     if (headBone) {
@@ -261,6 +317,8 @@ if (!mount) {
         0.1
       )
     }
+
+    contactShadow.material.opacity = THREE.MathUtils.clamp(1 - scrollProgress * 1.3, 0, 1)
 
     const targetZ = 5 - scrollProgress * 1.4
     const targetY = 1.25
