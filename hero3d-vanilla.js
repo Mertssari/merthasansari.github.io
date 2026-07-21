@@ -74,12 +74,13 @@ if (!mount) {
   const characterRoot = new THREE.Group()
   const baseY = -1.6
   // Confident, professional standing pose: both arms rest naturally at the
-  // sides with a minor forward bend, no waving — like a portrait on a
-  // corporate/product landing page.
-  const baseRightArmX = 0.1
-  const baseRightArmZ = -0.06
-  const baseLeftArmX = 0.1
-  const baseLeftArmZ = 0.06
+  // sides. This rig's bind pose is a T-pose (arms horizontal at 0 rotation),
+  // so ~80° of X rotation is what actually swings the arm down to the hip —
+  // verified against this model's bone bind-pose axes, not guessed.
+  const baseRightArmX = 1.38
+  const baseRightArmZ = -0.16
+  const baseLeftArmX = 1.38
+  const baseLeftArmZ = 0.16
   characterRoot.position.set(0, baseY, 0)
   scene.add(characterRoot)
   characterRoot.add(contactShadow)
@@ -189,6 +190,39 @@ if (!mount) {
   window.addEventListener('mousemove', updatePointer)
   window.addEventListener('resize', handleResize)
 
+  // Click-and-drag turntable: visitors can grab the figure and spin it
+  // manually, on top of the passive cursor-tracking and scroll animation.
+  let manualRotationY = 0
+  let isDragging = false
+  let dragStartX = 0
+  let dragStartRotation = 0
+
+  mount.style.cursor = 'grab'
+  mount.style.touchAction = 'none'
+
+  const startDrag = (event) => {
+    isDragging = true
+    dragStartX = event.clientX
+    dragStartRotation = manualRotationY
+    mount.style.cursor = 'grabbing'
+    mount.setPointerCapture(event.pointerId)
+  }
+
+  const dragMove = (event) => {
+    if (!isDragging) return
+    manualRotationY = dragStartRotation + (event.clientX - dragStartX) * 0.012
+  }
+
+  const endDrag = () => {
+    isDragging = false
+    mount.style.cursor = 'grab'
+  }
+
+  mount.addEventListener('pointerdown', startDrag)
+  mount.addEventListener('pointermove', dragMove)
+  mount.addEventListener('pointerup', endDrag)
+  mount.addEventListener('pointercancel', endDrag)
+
   const clock = new THREE.Clock()
 
   const animate = () => {
@@ -205,8 +239,8 @@ if (!mount) {
     const scrollSpin = scrollProgress * Math.PI * 1.6
     characterRoot.rotation.y = THREE.MathUtils.lerp(
       characterRoot.rotation.y,
-      pointerX * 0.22 + scrollSpin,
-      0.06
+      pointerX * 0.22 + scrollSpin + manualRotationY,
+      isDragging ? 0.35 : 0.06
     )
     const scrollLift = scrollProgress * 0.9
     characterRoot.position.y = baseY + scrollLift + Math.sin(t * 0.8) * 0.06 + idleBob
