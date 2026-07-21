@@ -73,10 +73,12 @@ if (!mount) {
 
   const characterRoot = new THREE.Group()
   const baseY = -1.6
-  const baseRightArmX = 1.2
-  const baseRightArmZ = -0.15
-  const baseLeftArmX = 1.5
-  const baseLeftArmZ = -0.1
+  // Relaxed stance: right arm rests slightly forward and lifts into a gentle
+  // wave during idle, left arm stays naturally down at the side.
+  const baseRightArmX = 0.55
+  const baseRightArmZ = -0.22
+  const baseLeftArmX = 0.18
+  const baseLeftArmZ = 0.1
   characterRoot.position.set(0, baseY, 0)
   scene.add(characterRoot)
   characterRoot.add(contactShadow)
@@ -197,8 +199,7 @@ if (!mount) {
     const idleSwayZ = Math.sin(t * 1.1 + 0.5) * 0.04 * idleStrength
     const waveStrength = idleStrength * 0.8
     const wave = Math.sin(t * 2.2) * 0.25 * waveStrength
-    const waveRaise = -1.6 * waveStrength
-    const waveSide = 0.35 * waveStrength
+    const waveRaise = -1.1 * waveStrength
 
     // Scroll-driven spin + lift: the figure slowly turns and rises as the page
     // scrolls, creating the illusion that it is carrying the viewport downward.
@@ -262,7 +263,7 @@ if (!mount) {
       const idleArmZ = Math.sin(t * 1.4) * 0.08 * idleStrength
       rightArm.rotation.x = THREE.MathUtils.lerp(
         rightArm.rotation.x,
-        baseRightArmX - 0.5 * scrollProgress + idleArmX + waveRaise - 0.3,
+        baseRightArmX - 0.35 * scrollProgress + idleArmX + waveRaise,
         0.1
       )
       rightArm.rotation.z = THREE.MathUtils.lerp(
@@ -275,7 +276,7 @@ if (!mount) {
     if (rightForearm) {
       rightForearm.rotation.x = THREE.MathUtils.lerp(
         rightForearm.rotation.x,
-        -1.35 - 0.1 * scrollProgress + wave * 0.2,
+        -1.05 - 0.1 * scrollProgress + wave * 0.2,
         0.1
       )
       rightForearm.rotation.y = THREE.MathUtils.lerp(
