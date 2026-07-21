@@ -73,12 +73,13 @@ if (!mount) {
 
   const characterRoot = new THREE.Group()
   const baseY = -1.6
-  // Relaxed stance: right arm rests slightly forward and lifts into a gentle
-  // wave during idle, left arm stays naturally down at the side.
-  const baseRightArmX = 0.55
-  const baseRightArmZ = -0.22
-  const baseLeftArmX = 0.18
-  const baseLeftArmZ = 0.1
+  // Confident, professional standing pose: both arms rest naturally at the
+  // sides with a minor forward bend, no waving — like a portrait on a
+  // corporate/product landing page.
+  const baseRightArmX = 0.1
+  const baseRightArmZ = -0.06
+  const baseLeftArmX = 0.1
+  const baseLeftArmZ = 0.06
   characterRoot.position.set(0, baseY, 0)
   scene.add(characterRoot)
   characterRoot.add(contactShadow)
@@ -197,16 +198,14 @@ if (!mount) {
     const idleBob = Math.sin(t * 1.6) * 0.03 * idleStrength
     const idleSwayX = Math.sin(t * 0.9) * 0.03 * idleStrength
     const idleSwayZ = Math.sin(t * 1.1 + 0.5) * 0.04 * idleStrength
-    const waveStrength = idleStrength * 0.8
-    const wave = Math.sin(t * 2.2) * 0.25 * waveStrength
-    const waveRaise = -1.1 * waveStrength
+    const breathe = Math.sin(t * 1.3) * 0.04 * idleStrength
 
     // Scroll-driven spin + lift: the figure slowly turns and rises as the page
     // scrolls, creating the illusion that it is carrying the viewport downward.
     const scrollSpin = scrollProgress * Math.PI * 1.6
     characterRoot.rotation.y = THREE.MathUtils.lerp(
       characterRoot.rotation.y,
-      pointerX * 0.25 + scrollSpin,
+      pointerX * 0.22 + scrollSpin,
       0.06
     )
     const scrollLift = scrollProgress * 0.9
@@ -228,14 +227,19 @@ if (!mount) {
 
     const bodyLeanX = lean + idleSwayX
     const bodyLeanZ = -0.05 * scrollProgress + idleSwayZ
+    // Torso subtly turns toward the cursor, like the figure is engaged with
+    // the visitor — hips lead least, chest leads most (natural body chain).
+    const pointerTurn = pointerX * 0.14
 
     if (spineBone) {
       spineBone.rotation.x = THREE.MathUtils.lerp(spineBone.rotation.x, bodyLeanX * 0.6, 0.08)
+      spineBone.rotation.y = THREE.MathUtils.lerp(spineBone.rotation.y, pointerTurn * 0.4, 0.06)
       spineBone.rotation.z = THREE.MathUtils.lerp(spineBone.rotation.z, bodyLeanZ * 0.6, 0.08)
     }
 
     if (chestBone) {
       chestBone.rotation.x = THREE.MathUtils.lerp(chestBone.rotation.x, bodyLeanX * 0.8, 0.08)
+      chestBone.rotation.y = THREE.MathUtils.lerp(chestBone.rotation.y, pointerTurn * 0.7, 0.06)
       chestBone.rotation.z = THREE.MathUtils.lerp(chestBone.rotation.z, bodyLeanZ, 0.08)
     }
 
@@ -244,78 +248,59 @@ if (!mount) {
     }
 
     if (headBone) {
-      const idleHeadX = Math.sin(t * 1.8) * 0.08 * idleStrength
-      const idleHeadY = Math.sin(t * 1.3 + 1.2) * 0.06 * idleStrength
+      const idleHeadX = Math.sin(t * 1.8) * 0.05 * idleStrength
+      const idleHeadY = Math.sin(t * 1.3 + 1.2) * 0.04 * idleStrength
       headBone.rotation.x = THREE.MathUtils.lerp(
         headBone.rotation.x,
-        pointerY * 0.35 + idleHeadX,
+        pointerY * 0.3 + idleHeadX,
         0.08
       )
       headBone.rotation.y = THREE.MathUtils.lerp(
         headBone.rotation.y,
-        pointerX * 0.25 + idleHeadY,
+        pointerX * 0.32 + idleHeadY,
         0.08
       )
     }
 
     if (rightArm) {
-      const idleArmX = Math.sin(t * 1.1 + 0.5) * 0.06 * idleStrength
-      const idleArmZ = Math.sin(t * 1.4) * 0.08 * idleStrength
+      const idleArmX = Math.sin(t * 1.1 + 0.5) * 0.035 * idleStrength
+      const idleArmZ = Math.sin(t * 1.4) * 0.03 * idleStrength
       rightArm.rotation.x = THREE.MathUtils.lerp(
         rightArm.rotation.x,
-        baseRightArmX - 0.35 * scrollProgress + idleArmX + waveRaise,
-        0.1
+        baseRightArmX - 0.2 * scrollProgress + idleArmX + breathe * 0.4,
+        0.08
       )
       rightArm.rotation.z = THREE.MathUtils.lerp(
         rightArm.rotation.z,
-        baseRightArmZ + 0.1 * scrollProgress + idleArmZ - 0.15 * waveStrength,
-        0.1
+        baseRightArmZ + 0.06 * scrollProgress + idleArmZ,
+        0.08
       )
     }
 
     if (rightForearm) {
       rightForearm.rotation.x = THREE.MathUtils.lerp(
         rightForearm.rotation.x,
-        -1.05 - 0.1 * scrollProgress + wave * 0.2,
-        0.1
-      )
-      rightForearm.rotation.y = THREE.MathUtils.lerp(
-        rightForearm.rotation.y,
-        wave * 0.5,
-        0.1
+        -0.12 - 0.05 * scrollProgress,
+        0.08
       )
     }
 
     if (rightHand) {
-      rightHand.rotation.x = THREE.MathUtils.lerp(
-        rightHand.rotation.x,
-        0.1 - 0.05 * scrollProgress,
-        0.1
-      )
-      rightHand.rotation.y = THREE.MathUtils.lerp(
-        rightHand.rotation.y,
-        0.9 + wave * 0.5,
-        0.1
-      )
-      rightHand.rotation.z = THREE.MathUtils.lerp(
-        rightHand.rotation.z,
-        -0.15,
-        0.1
-      )
+      rightHand.rotation.z = THREE.MathUtils.lerp(rightHand.rotation.z, -0.05, 0.08)
     }
 
     if (leftArm) {
-      const idleArmX = Math.sin(t * 1.15) * 0.05 * idleStrength
-      const idleArmZ = Math.sin(t * 1.4 + 1.2) * 0.07 * idleStrength
+      const idleArmX = Math.sin(t * 1.15) * 0.035 * idleStrength
+      const idleArmZ = Math.sin(t * 1.4 + 1.2) * 0.03 * idleStrength
       leftArm.rotation.x = THREE.MathUtils.lerp(
         leftArm.rotation.x,
-        baseLeftArmX - 0.25 * scrollProgress + idleArmX,
-        0.1
+        baseLeftArmX - 0.15 * scrollProgress + idleArmX + breathe * 0.4,
+        0.08
       )
       leftArm.rotation.z = THREE.MathUtils.lerp(
         leftArm.rotation.z,
         baseLeftArmZ - idleArmZ,
-        0.1
+        0.08
       )
     }
 
@@ -325,6 +310,9 @@ if (!mount) {
     const targetY = 1.25
     camera.position.z = THREE.MathUtils.lerp(camera.position.z, targetZ, 0.06)
     camera.position.y = THREE.MathUtils.lerp(camera.position.y, targetY, 0.06)
+    // Gentle camera parallax toward the cursor adds depth and makes the
+    // scene feel alive and responsive without moving the character itself.
+    camera.position.x = THREE.MathUtils.lerp(camera.position.x, pointerX * 0.35, 0.05)
     camera.lookAt(0, 1.25, 0)
 
     renderer.render(scene, camera)
