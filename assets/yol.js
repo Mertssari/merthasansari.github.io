@@ -18,24 +18,87 @@
     shadow: "rgba(70,50,30,0.16)"
   };
 
-  // ---------- Duraklar (şimdilik bir tane; sıradakiler "yakında") ----------
+  // ---------- Dil (TR/EN) ----------
+  const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* gizli sekme */ } } };
+  let lang = (() => { const v = store.get("preferredLang"); if (v === "tr" || v === "en") return v; return (navigator.language || "tr").toLowerCase().startsWith("tr") ? "tr" : "en"; })();
+  const T = {
+    tr: {
+      doc_title: "Mert Hasan Sarı | Yol Haritası",
+      doc_desc: "Mert Hasan Sarı: Karabük Üniversitesi Bilgisayar Mühendisliği öğrencisi. Eğitim, projeler ve iletişim; kaydırdıkça ilerleyen bir yol haritası portfolyosu.",
+      brand_aria: "Başa dön", lang_aria: "Dil seçimi", summary_btn: "Özet görünüm",
+      hero_eyebrow: "Portfolyo · Yol Haritası",
+      hero_lead: "Bilgisayar Mühendisliği öğrencisi. Teknoloji ve estetiğin kesişiminde, güvenli ve ölçeklenebilir dijital deneyimler tasarlıyorum.",
+      hero_cue: "Yolculuğa başlamak için kaydır", route_aria: "Duraklar",
+      route_start: "Başlangıç", route_start_sub: "Merhaba",
+      map_start: "BAŞLANGIÇ", map_uni_sub: "Bilgisayar Mühendisliği", map_faculty: "MÜHENDİSLİK",
+      map_workshop: "ATÖLYE", map_projects: "PROJELER", map_post: "POSTANE", map_contact: "İLETİŞİM",
+      map_end: "Şimdilik yolun sonu", map_end_sub: "Uğradığınız için teşekkürler",
+      all_projects: "Tüm projeler", highlights: "Öne çıkanlar", my_role: "Rolüm", tech: "Teknolojiler",
+      live_demo: "Canlı demo", source: "Kaynak kodu",
+      f_name: "İsim", f_email: "E-posta", f_message: "Mesaj", f_send: "Gönder",
+      f_invalid: "Lütfen tüm alanları doğru doldurun.", f_sending: "Gönderiliyor…", f_ok: "Mesajınız iletildi, teşekkürler!",
+      f_bad: "Sunucu beklenmeyen bir yanıt döndürdü.", f_fail: "Gönderim başarısız.",
+      s_tag: "Özet görünüm", s_back: "Haritaya dön", s_role: "Bilgisayar Mühendisliği öğrencisi · Karabük Üniversitesi",
+      s_about: "Hakkımda", s_about_more: "Teknoloji ve estetiğin kesişiminde, güvenli ve ölçeklenebilir dijital deneyimler tasarlıyorum.",
+      s_edu: "Eğitim", s_ongoing: "Devam ediyor", s_projects: "Projeler", s_skills: "Yetkinlikler",
+      s_contact: "İletişim", s_contact_text: "Birlikte çalışmak için mesaj bırakabilirsiniz.", s_msg: "Mesaj gönder"
+    },
+    en: {
+      doc_title: "Mert Hasan Sarı | Road Map",
+      doc_desc: "Mert Hasan Sarı: Computer Engineering student at Karabük University. Education, projects and contact in a scroll-driven road map portfolio.",
+      brand_aria: "Back to top", lang_aria: "Language", summary_btn: "Summary view",
+      hero_eyebrow: "Portfolio · Road Map",
+      hero_lead: "Computer Engineering student. I design secure, scalable digital experiences where technology meets aesthetics.",
+      hero_cue: "Scroll to start the journey", route_aria: "Stops",
+      route_start: "Start", route_start_sub: "Hello",
+      map_start: "START", map_uni_sub: "Computer Engineering", map_faculty: "ENGINEERING",
+      map_workshop: "WORKSHOP", map_projects: "PROJECTS", map_post: "POST OFFICE", map_contact: "CONTACT",
+      map_end: "End of the road, for now", map_end_sub: "Thanks for stopping by",
+      all_projects: "All projects", highlights: "Highlights", my_role: "My role", tech: "Technologies",
+      live_demo: "Live demo", source: "Source code",
+      f_name: "Name", f_email: "Email", f_message: "Message", f_send: "Send",
+      f_invalid: "Please fill in all fields correctly.", f_sending: "Sending…", f_ok: "Message sent, thank you!",
+      f_bad: "The server returned an unexpected response.", f_fail: "Sending failed.",
+      s_tag: "Summary view", s_back: "Back to map", s_role: "Computer Engineering student · Karabük University",
+      s_about: "About", s_about_more: "I design secure, scalable digital experiences where technology meets aesthetics.",
+      s_edu: "Education", s_ongoing: "In progress", s_projects: "Projects", s_skills: "Skills",
+      s_contact: "Contact", s_contact_text: "Leave a message if you'd like to work together.", s_msg: "Send a message"
+    }
+  };
+  const t = (k) => (T[lang] && T[lang][k]) || T.tr[k] || k;
+
+  // ---------- Duraklar ----------
   const STOPS = [
     {
       id: "karabuk", anchor: [690, 1590], dwell: 700, side: "left", span: 900, // kart solda; kampüs yolun sağında ~900 birim
-      eyebrow: "Eğitim", title: "Karabük Üniversitesi", sub: "Bilgisayar Mühendisliği · 3. sınıf",
-      text: "Karabük Üniversitesi Bilgisayar Mühendisliği 3. sınıf öğrencisiyim. Okulda öğrendiklerimi gerçek projelerle pekiştiriyor; güvenlik, performans ve kullanıcı deneyimini birlikte düşünerek uçtan uca yazılım geliştiriyorum.",
-      label: "Odak alanları", chips: ["Web geliştirme", "Veri yönetimi", "Takım çalışmasına uyum"]
+      eyebrow: { tr: "Eğitim", en: "Education" },
+      title: { tr: "Karabük Üniversitesi", en: "Karabük University" },
+      sub: { tr: "Bilgisayar Mühendisliği · 3. sınıf", en: "Computer Engineering · 3rd year" },
+      text: {
+        tr: "Karabük Üniversitesi Bilgisayar Mühendisliği 3. sınıf öğrencisiyim. Okulda öğrendiklerimi gerçek projelerle pekiştiriyor; güvenlik, performans ve kullanıcı deneyimini birlikte düşünerek uçtan uca yazılım geliştiriyorum.",
+        en: "I'm a 3rd-year Computer Engineering student at Karabük University. I reinforce what I learn at school with real projects, building end-to-end software with security, performance and user experience in mind."
+      },
+      label: { tr: "Odak alanları", en: "Focus areas" },
+      chips: { tr: ["Web geliştirme", "Veri yönetimi", "Takım çalışmasına uyum"], en: ["Web development", "Data management", "Team player"] }
     },
     {
       id: "atolye", type: "projects", anchor: [600, 3050], dwell: 1100, side: "left", span: 960,
-      eyebrow: "Projeler", title: "Atölye", sub: "Uçtan uca geliştirdiğim projeler",
-      text: "Fikirden üretime; güvenlik, performans ve kullanıcı deneyimini bir arada düşünerek geliştirdiğim seçme çalışmalar."
+      eyebrow: { tr: "Projeler", en: "Projects" }, title: { tr: "Atölye", en: "Workshop" },
+      sub: { tr: "Uçtan uca geliştirdiğim projeler", en: "Projects I built end to end" },
+      text: {
+        tr: "Fikirden üretime; güvenlik, performans ve kullanıcı deneyimini bir arada düşünerek geliştirdiğim seçme çalışmalar.",
+        en: "Selected work, from idea to production, built with security, performance and user experience in mind."
+      }
     }
   ];
   STOPS.push({
     id: "iletisim", type: "contact", anchor: [1000, 3760], dwell: 900, side: "left", span: 560,
-    eyebrow: "İletişim", title: "Birlikte çalışalım", sub: "Postane",
-    text: "Projenizi konuşalım ve güvenli, etkileyici bir dijital deneyim tasarlayalım. Mesajınıza en kısa sürede dönüş yaparım."
+    eyebrow: { tr: "İletişim", en: "Contact" }, title: { tr: "Birlikte çalışalım", en: "Let's work together" },
+    sub: { tr: "Postane", en: "Post office" },
+    text: {
+      tr: "Projenizi konuşalım ve güvenli, etkileyici bir dijital deneyim tasarlayalım. Mesajınıza en kısa sürede dönüş yaparım.",
+      en: "Let's talk about your project and design a secure, compelling digital experience. I'll get back to you as soon as possible."
+    }
   });
   const UPCOMING = [];
   const CONTACT = {
@@ -49,7 +112,10 @@
   // Proje içerikleri tek yerde: data/projects.js. Her projenin atölyedeki bina rengi:
   const PROJECTS = (window.GARAGE_PROJECTS || []).slice(0, 3);
   const PROJECT_TINT = { carrent: "#e85d3f", lifehub: "#6f9e8a", websistemleri: "#2e5e73" };
-  const tr = (v) => (v && typeof v === "object" && !Array.isArray(v) ? v.tr : v);
+  const tr = (v) => (v && typeof v === "object" && !Array.isArray(v) ? (v[lang] || v.tr) : v); // seçili dildeki metin
+  // haritadaki yazılar: dil değişince güncellenir
+  const mapLabels = [];
+  const mapLabel = (node, key) => { node.textContent = t(key); mapLabels.push([node, key]); };
   const escHtml = (x) => String(x).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
   // ---------- SVG yardımcıları ----------
@@ -118,7 +184,7 @@
     const g = el("g", { transform: `translate(${p.x} ${p.y})` });
     for (let i = 0; i < 7; i++) for (let j = 0; j < 2; j++) el("rect", { x: -28 + i * 8, y: -8 + j * 8, width: 8, height: 8, fill: (i + j) % 2 ? C.ink : "#fff" }, g);
     const t = el("text", { x: 52, y: 5, "font-size": 15, "font-weight": 700, "letter-spacing": 3, fill: C.ink, "font-family": "Plus Jakarta Sans, sans-serif" }, g);
-    t.textContent = "BAŞLANGIÇ";
+    mapLabel(t, "map_start");
   })();
 
   // ---------- Kampüs: Karabük Üniversitesi ----------
@@ -229,9 +295,9 @@
     const t1 = el("text", { x: 0, y: 0, "text-anchor": "middle", "font-size": 22, "font-weight": 800, "letter-spacing": 4, fill: C.ink, "font-family": "Plus Jakarta Sans, sans-serif" }, lab);
     t1.textContent = "KARABÜK ÜNİVERSİTESİ";
     const t2 = el("text", { x: 0, y: 24, "text-anchor": "middle", "font-size": 14, "font-weight": 600, fill: C.petrol, "font-family": "Plus Jakarta Sans, sans-serif" }, lab);
-    t2.textContent = "Bilgisayar Mühendisliği";
+    mapLabel(t2, "map_uni_sub");
     const t3 = el("text", { x: 1145, y: 1768, "text-anchor": "middle", "font-size": 13, "font-weight": 700, "letter-spacing": 3, fill: "#fff", "font-family": "Plus Jakarta Sans, sans-serif" }, g);
-    t3.textContent = "MÜHENDİSLİK";
+    mapLabel(t3, "map_faculty");
     world.insertBefore(g, roadBase); // bağlantı yolu ana yolun altından bağlansın
   })();
 
@@ -315,9 +381,9 @@
     world.insertBefore(g, roadBase); // zemin ana yolun altında kalsın
     // alan etiketi
     const t1 = el("text", { x: 1130, y: 2752, "text-anchor": "middle", "font-size": 24, "font-weight": 800, "letter-spacing": 6, fill: C.ink, "font-family": font }, g);
-    t1.textContent = "ATÖLYE";
+    mapLabel(t1, "map_workshop");
     const t2 = el("text", { x: 1130, y: 2728, "text-anchor": "middle", "font-size": 13, "font-weight": 700, "letter-spacing": 3, fill: C.accentDark, "font-family": font }, g);
-    t2.textContent = "PROJELER";
+    mapLabel(t2, "map_projects");
     // doğu kenarı ağaç sırası
     for (let x = 1450; x <= 1500; x += 46) for (let y = 2810; y <= 3270; y += 66) {
       el("circle", { cx: x + 5, cy: y + 7, r: 14, fill: C.shadow }, g);
@@ -377,7 +443,7 @@
     el("path", { d: "M 1000 3760 L 1090 3760", stroke: C.road, "stroke-width": 30, "stroke-linecap": "round", fill: "none" }, g);
     building(1110, 3640, 270, 104, "#e9b44c", g, { fh: 26, sky: 0 });
     const t = el("text", { x: 1222, y: 3700, "text-anchor": "middle", "font-size": 16, "font-weight": 800, "letter-spacing": 4, fill: "#fff", "font-family": font }, g);
-    t.textContent = "POSTANE";
+    mapLabel(t, "map_post");
     // zarf amblemi
     el("rect", { x: 1300, y: 3664, width: 40, height: 28, rx: 4, fill: "#fff" }, g);
     el("path", { d: "M 1302 3667 L 1320 3682 L 1338 3667", fill: "none", stroke: "#e9b44c", "stroke-width": 3, "stroke-linejoin": "round" }, g);
@@ -399,9 +465,9 @@
       ["#ee8a70", "#f3c96b", "#ffffff"].forEach((col, k) => el("circle", { cx: x - 12 + k * 12, cy: y, r: 4, fill: col }, g));
     });
     const l1 = el("text", { x: 1240, y: 3594, "text-anchor": "middle", "font-size": 22, "font-weight": 800, "letter-spacing": 6, fill: C.ink, "font-family": font }, g);
-    l1.textContent = "POSTANE";
+    mapLabel(l1, "map_post");
     const l2 = el("text", { x: 1240, y: 3570, "text-anchor": "middle", "font-size": 13, "font-weight": 700, "letter-spacing": 3, fill: C.accentDark, "font-family": font }, g);
-    l2.textContent = "İLETİŞİM";
+    mapLabel(l2, "map_contact");
     world.insertBefore(g, roadBase);
   })();
 
@@ -439,9 +505,9 @@
     el("rect", { x: -44, y: -6, width: 88, height: 12, rx: 3, fill: "#fff", stroke: "rgba(0,0,0,0.1)" }, g);
     for (let i = 0; i < 5; i++) el("rect", { x: -40 + i * 18, y: -6, width: 9, height: 12, fill: C.accent }, g);
     const t = el("text", { x: 0, y: 46, "text-anchor": "middle", "font-size": 15, "font-weight": 700, fill: C.ink, "font-family": "Plus Jakarta Sans, sans-serif" }, g);
-    t.textContent = "Şimdilik yolun sonu";
+    mapLabel(t, "map_end");
     const t2 = el("text", { x: 0, y: 67, "text-anchor": "middle", "font-size": 13, "font-weight": 600, fill: C.muted, "font-family": "Plus Jakarta Sans, sans-serif" }, g);
-    t2.textContent = "Uğradığınız için teşekkürler";
+    mapLabel(t2, "map_end_sub");
   })();
 
   // ---------- Ağaçlar (yoldan, nehirden ve kampüsten uzakta) ----------
@@ -549,13 +615,16 @@
   function routeItem(title, sub, onClick) {
     const li = document.createElement("li");
     const b = document.createElement("button"); b.type = "button";
-    b.innerHTML = `<span class="dot"></span><span>${title}<small>${sub}</small></span>`;
+    b.innerHTML = `<span class="dot"></span><span class="route__txt"></span>`;
     if (onClick) b.addEventListener("click", onClick); else b.disabled = true;
-    li.appendChild(b); routeList.appendChild(li); routeItems.push(li); return li;
+    li.appendChild(b); routeList.appendChild(li); routeItems.push(li);
+    li._text = () => `${escHtml(title())}<small>${escHtml(sub())}</small>`;
+    return li;
   }
-  routeItem("Başlangıç", "Merhaba", () => scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" }));
-  STOPS.forEach((s, i) => routeItem(s.title, s.eyebrow, () => scrollTo({ top: progressOfStop(i) * maxScroll(), behavior: reduceMotion ? "auto" : "smooth" })));
-  UPCOMING.forEach((u) => routeItem(u.title, "Yakında", null));
+  function renderRoute() { routeItems.forEach((li) => { li.querySelector(".route__txt").innerHTML = li._text(); }); }
+  routeItem(() => t("route_start"), () => t("route_start_sub"), () => scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" }));
+  STOPS.forEach((s, i) => routeItem(() => tr(s.title), () => tr(s.eyebrow), () => scrollTo({ top: progressOfStop(i) * maxScroll(), behavior: reduceMotion ? "auto" : "smooth" })));
+  renderRoute();
 
   // ---------- Kart ----------
   const card = document.getElementById("card");
@@ -563,15 +632,17 @@
   // Projeler kartı: liste (i, null) ya da tek proje detayı (i, id)
   const ARROW = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>';
   const GH = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .5A11.5 11.5 0 0 0 8.37 22.9c.6.12.82-.26.82-.58v-2.1c-3.34.72-4.04-1.61-4.04-1.61-.55-1.4-1.34-1.78-1.34-1.78-1.1-.75.08-.73.08-.73 1.22.08 1.86 1.25 1.86 1.25 1.08 1.84 2.83 1.31 3.52 1 .11-.78.42-1.31.76-1.61-2.66-.3-5.46-1.33-5.46-5.91 0-1.3.47-2.36 1.24-3.19-.13-.3-.54-1.52.12-3.17 0 0 1.01-.32 3.3 1.22a11.4 11.4 0 0 1 6 0c2.29-1.54 3.3-1.22 3.3-1.22.66 1.65.25 2.87.12 3.17.77.83 1.24 1.89 1.24 3.19 0 4.6-2.8 5.61-5.47 5.91.43.38.82 1.12.82 2.26v3.35c0 .32.22.7.83.58A11.5 11.5 0 0 0 12 .5Z"/></svg>';
+  let cardProjectId = null;
   function renderProjects(i, id) {
+    cardProjectId = id || null;
     const s = STOPS[i], num = String(i + 1).padStart(2, "0");
     if (!id) {
       driveTo(null);
       card.innerHTML = `
-        <p class="card__eyebrow"><span class="card__num">${num}</span>${s.eyebrow}</p>
-        <h2>${s.title}</h2>
-        <p class="card__sub">${s.sub}</p>
-        <p class="card__text">${s.text}</p>
+        <p class="card__eyebrow"><span class="card__num">${num}</span>${tr(s.eyebrow)}</p>
+        <h2>${tr(s.title)}</h2>
+        <p class="card__sub">${tr(s.sub)}</p>
+        <p class="card__text">${tr(s.text)}</p>
         <ul class="projects">${PROJECTS.map((p) => `
           <li><button class="proj" type="button" data-id="${p.id}" style="--tint:${PROJECT_TINT[p.id] || "#e85d3f"}">
             <span class="proj__bar" aria-hidden="true"></span>
@@ -595,19 +666,19 @@
     requestAnimationFrame(() => hotProject(id)); // eski butonun blur olayından sonra vurgula
     driveTo(id);
     const links = [
-      p.links && p.links.demo ? `<a class="btn btn--primary" href="${escHtml(p.links.demo)}" target="_blank" rel="noopener">Canlı demo ${ARROW}</a>` : "",
-      p.links && p.links.source ? `<a class="btn ${p.links.demo ? "" : "btn--primary"}" href="${escHtml(p.links.source)}" target="_blank" rel="noopener">${GH} Kaynak kodu</a>` : ""
+      p.links && p.links.demo ? `<a class="btn btn--primary" href="${escHtml(p.links.demo)}" target="_blank" rel="noopener">${t("live_demo")} ${ARROW}</a>` : "",
+      p.links && p.links.source ? `<a class="btn ${p.links.demo ? "" : "btn--primary"}" href="${escHtml(p.links.source)}" target="_blank" rel="noopener">${GH} ${t("source")}</a>` : ""
     ].join("");
     card.innerHTML = `
-      <button class="back" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H3M7 4L3 8l4 4"/></svg>Tüm projeler</button>
+      <button class="back" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H3M7 4L3 8l4 4"/></svg>${t("all_projects")}</button>
       <p class="card__eyebrow" style="--tint:${PROJECT_TINT[p.id]}"><span class="card__num card__num--tint">${num}</span>${escHtml(tr(p.status))}</p>
       <h2>${escHtml(p.title)}</h2>
       <p class="card__sub">${escHtml(tr(p.tagline))}</p>
       <p class="card__text">${escHtml(tr(p.desc))}</p>
-      <p class="card__label">Öne çıkanlar</p>
+      <p class="card__label">${t("highlights")}</p>
       <ul class="feats">${(tr(p.features) || []).map((x) => `<li>${escHtml(x)}</li>`).join("")}</ul>
-      ${p.role ? `<p class="card__label">Rolüm</p><p class="card__text card__text--tight">${escHtml(tr(p.role))}</p>` : ""}
-      <p class="card__label">Teknolojiler</p>
+      ${p.role ? `<p class="card__label">${t("my_role")}</p><p class="card__text card__text--tight">${escHtml(tr(p.role))}</p>` : ""}
+      <p class="card__label">${t("tech")}</p>
       <ul class="chips">${p.parts.map((x) => `<li>${escHtml(x.tech)}</li>`).join("")}</ul>
       ${links ? `<div class="links">${links}</div>` : ""}`;
     card.classList.add("is-swap");
@@ -624,39 +695,39 @@
   function renderContact(i) {
     const s = STOPS[i], num = String(i + 1).padStart(2, "0");
     card.innerHTML = `
-      <p class="card__eyebrow"><span class="card__num">${num}</span>${s.eyebrow}</p>
-      <h2>${s.title}</h2>
-      <p class="card__sub">${s.sub}</p>
-      <p class="card__text">${s.text}</p>
+      <p class="card__eyebrow"><span class="card__num">${num}</span>${tr(s.eyebrow)}</p>
+      <h2>${tr(s.title)}</h2>
+      <p class="card__sub">${tr(s.sub)}</p>
+      <p class="card__text">${tr(s.text)}</p>
       <div class="links links--social">${CONTACT.links.map((l) => `<a class="btn btn--social btn--${l.icon}" href="${l.href}" target="_blank" rel="noopener">${SOCIAL_ICON[l.icon]}${l.label}</a>`).join("")}</div>
       <form class="form" id="contactForm" novalidate>
         <input type="hidden" name="access_key" value="${CONTACT.accessKey}" />
         <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
         <div class="form__row">
-          <label class="field"><span>İsim</span><input name="name" type="text" autocomplete="name" required /></label>
-          <label class="field"><span>E-posta</span><input name="email" type="email" autocomplete="email" required /></label>
+          <label class="field"><span>${t("f_name")}</span><input name="name" type="text" autocomplete="name" required /></label>
+          <label class="field"><span>${t("f_email")}</span><input name="email" type="email" autocomplete="email" required /></label>
         </div>
-        <label class="field"><span>Mesaj</span><textarea name="message" rows="4" required></textarea></label>
+        <label class="field"><span>${t("f_message")}</span><textarea name="message" rows="4" required></textarea></label>
         <div class="form__foot">
-          <button class="btn btn--primary" type="submit">Gönder</button>
+          <button class="btn btn--primary" type="submit">${t("f_send")}</button>
           <p class="form__status" role="status" aria-live="polite"></p>
         </div>
       </form>`;
     const form = card.querySelector("#contactForm"), status = card.querySelector(".form__status"), btn = form.querySelector("button[type=submit]");
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      if (!form.checkValidity()) { status.textContent = "Lütfen tüm alanları doğru doldurun."; status.className = "form__status is-error"; form.reportValidity(); return; }
-      status.textContent = "Gönderiliyor…"; status.className = "form__status";
+      if (!form.checkValidity()) { status.textContent = t("f_invalid"); status.className = "form__status is-error"; form.reportValidity(); return; }
+      status.textContent = t("f_sending"); status.className = "form__status";
       btn.disabled = true;
       try {
         const payload = Object.fromEntries(new FormData(form).entries());
         const res = await fetch("https://api.web3forms.com/submit", {
           method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: JSON.stringify(payload)
         });
-        if (!(res.headers.get("content-type") || "").includes("application/json")) throw new Error("Sunucu beklenmeyen bir yanıt döndürdü.");
+        if (!(res.headers.get("content-type") || "").includes("application/json")) throw new Error(t("f_bad"));
         const data = await res.json();
-        if (!res.ok || !data.success) throw new Error(data.message || "Gönderim başarısız.");
-        status.textContent = "Mesajınız iletildi, teşekkürler!"; status.className = "form__status is-ok";
+        if (!res.ok || !data.success) throw new Error(data.message || t("f_fail"));
+        status.textContent = t("f_ok"); status.className = "form__status is-ok";
         form.reset();
         if (mailFlag) mailFlag.setAttribute("transform", "rotate(0 1150 3812)"); // posta kutusunun bayrağı kalkar
       } catch (err) {
@@ -683,18 +754,22 @@
     card.classList.toggle("is-wide", s.type === "projects" || s.type === "contact");
     if (s.type === "projects") { renderProjects(i, pendingProject); pendingProject = null; }
     else if (s.type === "contact") renderContact(i);
-    else card.innerHTML = `
-      <p class="card__eyebrow"><span class="card__num">${String(i + 1).padStart(2, "0")}</span>${s.eyebrow}</p>
-      <h2>${s.title}</h2>
-      <p class="card__sub">${s.sub}</p>
-      <p class="card__text">${s.text}</p>
-      <p class="card__label">${s.label}</p>
-      <ul class="chips">${s.chips.map((c) => `<li>${c}</li>`).join("")}</ul>`;
+    else renderInfo(i);
     card.classList.toggle("is-left", s.side === "left");
     document.body.classList.toggle("card-left", s.side === "left");
     card.hidden = false;
     void card.offsetWidth;
     card.classList.add("is-open");
+  }
+  function renderInfo(i) {
+    const s = STOPS[i];
+    card.innerHTML = `
+      <p class="card__eyebrow"><span class="card__num">${String(i + 1).padStart(2, "0")}</span>${tr(s.eyebrow)}</p>
+      <h2>${tr(s.title)}</h2>
+      <p class="card__sub">${tr(s.sub)}</p>
+      <p class="card__text">${tr(s.text)}</p>
+      <p class="card__label">${tr(s.label)}</p>
+      <ul class="chips">${tr(s.chips).map((c) => `<li>${c}</li>`).join("")}</ul>`;
   }
 
   // ---------- Kamera + döngü ----------
@@ -828,46 +903,46 @@
     summary.innerHTML = `
       <div class="summary__inner">
         <div class="summary__bar">
-          <span class="summary__tag">Özet görünüm</span>
-          <button class="back summary__close" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H3M7 4L3 8l4 4"/></svg>Haritaya dön</button>
+          <span class="summary__tag">${t("s_tag")}</span>
+          <button class="back summary__close" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H3M7 4L3 8l4 4"/></svg>${t("s_back")}</button>
         </div>
         <header class="summary__head">
           <img src="assets/avatar.webp" alt="" width="96" height="96" />
           <div>
             <h2 id="summaryTitle">Mert Hasan Sarı</h2>
-            <p class="summary__role">Bilgisayar Mühendisliği öğrencisi · Karabük Üniversitesi</p>
+            <p class="summary__role">${t("s_role")}</p>
             <div class="links links--social">${CONTACT.links.map((l) => `<a class="btn btn--social btn--${l.icon}" href="${l.href}" target="_blank" rel="noopener">${SOCIAL_ICON[l.icon]}${l.label}</a>`).join("")}</div>
           </div>
         </header>
         <section class="summary__sec">
-          <h3>Hakkımda</h3>
-          <p>${escHtml(edu.text)} Teknoloji ve estetiğin kesişiminde, güvenli ve ölçeklenebilir dijital deneyimler tasarlıyorum.</p>
+          <h3>${t("s_about")}</h3>
+          <p>${escHtml(tr(edu.text))} ${t("s_about_more")}</p>
         </section>
         <section class="summary__sec">
-          <h3>Eğitim</h3>
-          <div class="summary__row"><div><strong>Karabük Üniversitesi</strong><span>${escHtml(edu.sub)}</span></div><span class="summary__meta">Devam ediyor</span></div>
-          <ul class="chips">${edu.chips.map((c) => `<li>${escHtml(c)}</li>`).join("")}</ul>
+          <h3>${t("s_edu")}</h3>
+          <div class="summary__row"><div><strong>${escHtml(tr(edu.title))}</strong><span>${escHtml(tr(edu.sub))}</span></div><span class="summary__meta">${t("s_ongoing")}</span></div>
+          <ul class="chips">${tr(edu.chips).map((c) => `<li>${escHtml(c)}</li>`).join("")}</ul>
         </section>
         <section class="summary__sec">
-          <h3>Projeler</h3>
+          <h3>${t("s_projects")}</h3>
           <div class="summary__projects">${PROJECTS.map((p) => `
             <article class="summary__proj" style="--tint:${PROJECT_TINT[p.id] || "#e85d3f"}">
               <div class="summary__projhead"><strong>${escHtml(p.title)}</strong><span class="summary__meta">${escHtml(tr(p.status))}</span></div>
               <p>${escHtml(tr(p.desc))}</p>
               <p class="summary__tech">${p.parts.map((x) => escHtml(x.tech)).join(" · ")}</p>
               <div class="summary__links">
-                ${p.links && p.links.demo ? `<a href="${escHtml(p.links.demo)}" target="_blank" rel="noopener">Canlı demo</a>` : ""}
-                ${p.links && p.links.source ? `<a href="${escHtml(p.links.source)}" target="_blank" rel="noopener">Kaynak kodu</a>` : ""}
+                ${p.links && p.links.demo ? `<a href="${escHtml(p.links.demo)}" target="_blank" rel="noopener">${t("live_demo")}</a>` : ""}
+                ${p.links && p.links.source ? `<a href="${escHtml(p.links.source)}" target="_blank" rel="noopener">${t("source")}</a>` : ""}
               </div>
             </article>`).join("")}</div>
         </section>
         <section class="summary__sec">
-          <h3>Yetkinlikler</h3>
+          <h3>${t("s_skills")}</h3>
           <ul class="chips">${skills.map((c) => `<li>${escHtml(c)}</li>`).join("")}</ul>
         </section>
         <section class="summary__sec summary__cta">
-          <div><h3>İletişim</h3><p>Birlikte çalışmak için mesaj bırakabilirsiniz.</p></div>
-          <button class="btn btn--primary summary__msg" type="button">Mesaj gönder ${ARROW}</button>
+          <div><h3>${t("s_contact")}</h3><p>${t("s_contact_text")}</p></div>
+          <button class="btn btn--primary summary__msg" type="button">${t("s_msg")} ${ARROW}</button>
         </section>
       </div>`;
     summary.querySelector(".summary__close").addEventListener("click", () => closeSummary());
@@ -901,6 +976,35 @@
   addEventListener("keydown", (e) => { if (e.key === "Escape" && summaryOpen) closeSummary(); });
   addEventListener("hashchange", () => { if (location.hash === "#ozet") openSummary(false); else closeSummary(true); });
   if (location.hash === "#ozet") openSummary(false);
+
+  // ---------- Dil değiştirme ----------
+  function applyLang(next) {
+    lang = next === "en" ? "en" : "tr";
+    store.set("preferredLang", lang);
+    document.documentElement.lang = lang;
+    document.title = t("doc_title");
+    const md = document.querySelector('meta[name="description"]'); if (md) md.setAttribute("content", t("doc_desc"));
+    document.querySelectorAll("[data-i18n]").forEach((n) => { n.textContent = t(n.dataset.i18n); });
+    document.querySelectorAll("[data-i18n-aria]").forEach((n) => n.setAttribute("aria-label", t(n.dataset.i18nAria)));
+    document.querySelectorAll(".lang__btn").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
+    mapLabels.forEach(([node, key]) => { node.textContent = t(key); });
+    renderRoute();
+    // açık kartı yeni dilde yeniden çiz (formdaki yazılanlar korunur)
+    if (cardFor !== null) {
+      const s = STOPS[cardFor];
+      if (s.type === "projects") renderProjects(cardFor, cardProjectId);
+      else if (s.type === "contact") {
+        const form = card.querySelector("#contactForm");
+        const vals = form ? Object.fromEntries(new FormData(form).entries()) : {};
+        renderContact(cardFor);
+        const nf = card.querySelector("#contactForm");
+        ["name", "email", "message"].forEach((k) => { if (vals[k]) nf.elements[k].value = vals[k]; });
+      } else renderInfo(cardFor);
+    }
+    if (summary.innerHTML) { renderSummary(); if (summaryOpen) summary.querySelector(".summary__close").focus({ preventScroll: true }); }
+  }
+  document.querySelectorAll(".lang__btn").forEach((b) => b.addEventListener("click", () => { if (b.dataset.lang !== lang) applyLang(b.dataset.lang); }));
+  applyLang(lang);
 
   world.appendChild(car); // araba en üstte
   state.ang = tangentAt(START_D); // ilk karede yol yönüne bak

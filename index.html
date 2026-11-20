@@ -27,26 +27,32 @@
     </div>
 
     <header class="topbar">
-      <a class="brand" href="#top" aria-label="Başa dön">
+      <a class="brand" href="#top" aria-label="Başa dön" data-i18n-aria="brand_aria">
         <span class="brand__mark">M</span>
         <span class="brand__name">Mert Hasan Sarı</span>
       </a>
-      <a class="topbar__link topbar__link--strong" href="#ozet" id="summaryBtn" aria-controls="summary">
-        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3.5h10M3 8h10M3 12.5h6"/></svg>Özet görünüm
-      </a>
+      <div class="topbar__right">
+        <div class="lang" role="group" aria-label="Dil seçimi" data-i18n-aria="lang_aria">
+          <button class="lang__btn" type="button" data-lang="tr" aria-pressed="true">TR</button>
+          <button class="lang__btn" type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+        <a class="topbar__link topbar__link--strong" href="#ozet" id="summaryBtn" aria-controls="summary">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3.5h10M3 8h10M3 12.5h6"/></svg><span data-i18n="summary_btn">Özet görünüm</span>
+        </a>
+      </div>
     </header>
 
     <!-- Giriş -->
     <section class="hero" id="top">
       <img class="hero__avatar" src="assets/avatar.webp" alt="Mert Hasan Sarı" width="92" height="92" />
-      <p class="hero__eyebrow">Portfolyo · Yol Haritası</p>
+      <p class="hero__eyebrow" data-i18n="hero_eyebrow">Portfolyo · Yol Haritası</p>
       <h1 class="hero__title">Mert Hasan Sarı</h1>
-      <p class="hero__lead">Bilgisayar Mühendisliği öğrencisi. Teknoloji ve estetiğin kesişiminde, güvenli ve ölçeklenebilir dijital deneyimler tasarlıyorum.</p>
-      <div class="hero__cue"><span class="mouse" aria-hidden="true"><span></span></span>Yolculuğa başlamak için kaydır</div>
+      <p class="hero__lead" data-i18n="hero_lead">Bilgisayar Mühendisliği öğrencisi. Teknoloji ve estetiğin kesişiminde, güvenli ve ölçeklenebilir dijital deneyimler tasarlıyorum.</p>
+      <div class="hero__cue"><span class="mouse" aria-hidden="true"><span></span></span><span data-i18n="hero_cue">Yolculuğa başlamak için kaydır</span></div>
     </section>
 
     <!-- Rota (ilerleme) -->
-    <nav class="route" aria-label="Duraklar">
+    <nav class="route" aria-label="Duraklar" data-i18n-aria="route_aria">
       <ol id="routeList"></ol>
     </nav>
 
